@@ -15,20 +15,20 @@ If you find a bug in the code or a security glitch, please message me on discord
 
 Actually, it isn't that simple as drag-n-drop the .dll into the SMod2 plugins folder. You must setup the node.js server as well.
 
-To start, install node.js (google it), and then install the packages in the directory `Mod8/Mod8Server/` using `npm`.
+To start, install node.js (google it), and then install the packages in the directory `Mod8Server/` using `npm`.
 
 Then, close your SCP:SL server and put the `Mod8.dll` into the `sm_plugins/` folder in the SCP:SL server files.
 
 If you are playing with friends/want to make it public, make sure to open port `8000`.
 
-Next, in the `Mod8/Mod8Server/` folder run the command `node server.js`. It should say `listening on port *:8000`, `Server listening on 127.0.0.1:8080` and nothing else for the time being.
+Next, in the `Mod8Server/` folder run the command `node server.js`. It should say `listening on port *:8000`, `Server listening on 127.0.0.1:8080` and nothing else for the time being.
 
 Now that the node.js server is running, you may now start the SCP:SL server. It should say from my plugin `Connecting to node.js server` and hopefully no errors. If there are errors, it probably couldn't connect to the node.js server.
 SCP:SL should start normally.
 
 ## How do I change the configurations?
 
-There are some lines of code in the `Mod8/Mod8Server/server.js` file at the top that have descriptions of what they do and what values can be set. The values can be changed at runtime by typing in the node.js server console the variable name followed by the new value (`<varname> <newvalue>`). It should say `<varname> = <newvalue>`.
+There are some lines of code in the `Mod8Server/server.js` file at the top that have descriptions of what they do and what values can be set. The values can be changed at runtime by typing in the node.js server console the variable name followed by the new value (`<varname> <newvalue>`). It should say `<varname> = <newvalue>`.
 
 ## How do I use this in-game?
 
