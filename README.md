@@ -37,3 +37,10 @@ Simple, press the `~` key on your keyboard when on the server in-game (not in th
 Then goto `<yourwebsite.example>:8000` in a modern web browser, and enter your steam64id and the 5 character key. You can save the steam64id into cookies if you wish to.
 
 From here, you should see a map, some navigation buttons, yourself, and maybe other players or a ring of where an SCP might be.
+
+# Notes
+
+## Why is there a bunch of commented code in Mod8.cs?
+Because I was too lazy to remove it all, and it was mostly for debugging.
+## Why is Root_X not the right room ingame?
+Because the names on the map are ripped right from the game. I have no control over how the SCP:SL devs name the rooms.
