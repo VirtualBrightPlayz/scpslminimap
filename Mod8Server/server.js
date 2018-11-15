@@ -310,6 +310,14 @@ io.on('connection', function (socket) {
     }
   });
 
+  socket.on('disconnect', function(){
+    try {
+      //Free up RAM.
+      delete players[socket.io.toString()];
+    } catch (e) {
+    }
+  });
+
 });
 
 http.listen(8000, function() {
