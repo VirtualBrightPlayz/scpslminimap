@@ -18,12 +18,12 @@ var svg_troom = new Image();
 var svg_curve = new Image();
 //svg_chkp.src = 'Chkp.png';
 //svg_914.src = '914.png';
-/*svg_crossing.src = 'Crossing.png';
+svg_crossing.src = 'Crossing.png';
 svg_straight.src = 'Straight.png';
 svg_airlock.src = 'Airlock.png';
 svg_tesla.src = 'Tesla.png';
 svg_troom.src = 'Troom.png';
-svg_curve.src = 'Curve.png';*/
+svg_curve.src = 'Curve.png';
 
 window.onload = function () {
   document.getElementById('steamid').value = getCookie("steamid");
