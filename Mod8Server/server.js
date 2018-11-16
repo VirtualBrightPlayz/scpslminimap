@@ -314,6 +314,7 @@ io.on('connection', function (socket) {
     try {
       //Free up RAM.
       delete players[socket.io.toString()];
+      delete io.sockets.sockets[io.sockets.sockets.indexOf(socket)];
     } catch (e) {
     }
   });
@@ -342,6 +343,10 @@ net.createServer(function(sock) {
         // Write the data back to the socket, the client will receive it as data from the server
         sock.write('You said "' + data + '"');*/
 
+    });
+
+    sock.on('error', function (error) {
+      console.log(error);
     });
 
     // Add a 'close' event handler to this instance of socket

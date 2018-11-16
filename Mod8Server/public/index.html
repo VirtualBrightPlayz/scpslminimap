@@ -3,6 +3,7 @@
   <head>
     <title>SCP: SL MiniMap</title>
     <script src="/socket.io/socket.io.js" charset="utf-8"></script>
+    <script src="translate.js" charset="utf-8"></script>
     <script src="map.js" charset="utf-8"></script>
     <style media="screen">
       html, body, canvas {
@@ -95,6 +96,8 @@
       <input id="key" type="text" placeholder="Key..."></input><br>
       <button id="submit" onclick="login();">Submit Key (if blank, you might only be able to see rooms!)</button><br>
       <button id="cookies" onclick="toggleSavedCookies();">Delete/Save SteamID in cookies</button>
+      <br>
+      <a href="https://github.com/VirtualBrightPlayz/scpslminimap"><button><h3>GitHub</h3></button></a>
     </div>
   </body>
 </html>

@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace VirtualBrightPlayz.SCPSL.Mod8
 {
-    internal class Mod8EventHandler : IEventHandlerFixedUpdate, IEventHandlerRoundStart, IEventHandlerPlayerJoin, IEventHandlerDisconnect
+    internal class Mod8EventHandler : IEventHandlerFixedUpdate, IEventHandlerPlayerJoin, IEventHandlerDisconnect
     {
         private Plugin plugin;
         private ImageGenerator img;
@@ -40,7 +40,7 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
             {
                 newkey += pswd[UnityEngine.Random.Range(0, pswd.Length)];
             }
-            plugin.Info(ev.Player.IpAddress);
+            //plugin.Info(ev.Player.IpAddress);
             conns.Add(ev.Player.IpAddress, ev.Player.SteamId);
             keys.Add(ev.Player.SteamId, newkey);
             ev.Player.SendConsoleMessage("Your SteamID is: " + ev.Player.SteamId);
@@ -54,7 +54,7 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
             foreach (var conn in conns)
             {
                 bool hasfound = false;
-                plugin.Info(conn.Value);
+                //plugin.Info(conn.Value);
                 foreach (var item in plugin.Server.GetPlayers())
                 {
                     if (item.SteamId == conn.Value)
@@ -79,92 +79,13 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
 
         void IEventHandlerFixedUpdate.OnFixedUpdate(FixedUpdateEvent ev)
         {
-            //plugin.Info(ServerTime.time.ToString());
             pTime -= Time.fixedDeltaTime;
             if (pTime < 0)
             {
                 pTime = 1;
-                //plugin.Info(Math.Floor(Time.realtimeSinceStartup) + "running");
                 try
                 {
                     var mod8 = (Mod8)plugin;
-                    //mod8.rm.
-                    //Texture2D texure = new Texture2D(img.colorMap.Count * 5, img.colorMap.Count * 5);
-                    /*img.GenerateMap(0);
-                    string str = string.Empty;
-                    str += " { ";
-                    str += " \"rooms\": [ ";
-                    var objs = img.colorMap;
-                    for (int i = 0; i < objs.Count; i++)
-                    {
-                        var obj = objs[i];
-                        str += " { ";
-                        str += " \"posx\": \"" + obj.centerOffset.x.ToString() + "\", ";
-                        str += " \"posy\": \"" + obj.centerOffset.y.ToString() + "\", ";
-                        str += " \"posz\": \"" + obj.centerOffset.y.ToString() + "\", ";
-
-                        str += " \"rotx\": \"" + obj.rotationY.ToString() + "\", ";
-                        str += " \"roty\": \"" + obj.rotationY.ToString() + "\", ";
-                        str += " \"rotz\": \"" + obj.rotationY.ToString() + "\", ";
-
-                        str += " \"id\": \"" + obj.type.ToString() + "\" ";
-                        if (i + 1 >= objs.Count)
-                        {
-                            str += " } ";
-                        }
-                        else
-                        {
-                            str += " }, ";
-                        }
-                    }
-                    str += " ] ";
-                    str += " } ";
-                    str += ";";*/
-                    /*foreach (var room in mod8.rm.rooms)
-                    {
-                        byte[] tex = ((Texture2D)room.icon.texture).EncodeToPNG();
-                        File.WriteAllBytes(Application.dataPath + "/../" + room.label + ".png", tex);
-                    }*/
-
-                    //plugin.Info(RemoteAdmin.QueryProcessor.Localplayer.NetworkServerRandom);
-                    //plugin.Info(RemoteAdmin.QueryProcessor.Localplayer.ServerRandom);
-                    //plugin.Info(RemoteAdmin.QueryProcessor.ServerStaticRandom);
-                    if (!RandomSeedSync.generated)
-                    {
-                        /*plugin.Info("not generated");
-                        var rss = PlayerManager.localPlayer.GetComponent<RandomSeedSync>();
-                        img = (ImageGenerator)GameObject.FindObjectOfType(typeof(ImageGenerator));
-                        //mod8.rm.GenerateMap(rss.Networkseed);
-                        plugin.Info(img.GenerateMap(rss.Networkseed).ToString());
-                        //plugin.Info(img.roomsOfType.Length.ToString());
-                        foreach (var item in img.roomsOfType)
-                        {
-                            foreach (var item2 in item.roomsOfType)
-                            {
-                                plugin.Info(item2.label);
-                                plugin.Info(item2.type.ToString());
-                                /*var tex = (Texture2D)item2.iconMinimap;
-                                var bytes = tex.EncodeToPNG();
-                                File.WriteAllBytes(Application.dataPath + "/../" + item2.label + ".png", bytes);*
-                            }
-                        }*/
-                    }
-
-                    /*var lczRooms = GameObject.Find("LightRooms").transform;
-                    foreach (Transform room in lczRooms)
-                    {
-                        plugin.Info(room.gameObject.name);
-                    }
-                    plugin.Info(lczRooms.childCount.ToString());*/
-
-                    //var local = PlayerManager.localPlayer.GetComponents<Component>();
-                    /*plugin.Info(local.Length.ToString());
-                    foreach (var comp in local)
-                    {
-                        plugin.Info(comp.GetType().ToString());
-                    }*/
-
-                    //plugin.Info(img.availableRooms.Count.ToString());
 
                     string str = string.Empty;
                     str += " { ";
@@ -282,32 +203,14 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
                     str += ";";
                     ASCIIEncoding asen = new ASCIIEncoding();
                     byte[] ba = asen.GetBytes(str);
-                    //plugin.Info("Transmitting.....");
 
                     mod8.s.Write(ba, 0, ba.Length);
-                    /*foreach (var room in rooms)
-                    {
-                        plugin.Info(room.readonlyPoint.position.ToString());
-                    }*/
                 }
                 catch (Exception e)
                 {
                     plugin.Info(e.Message);
                 }
             }
-        }
-
-        void IEventHandlerRoundStart.OnRoundStart(RoundStartEvent ev)
-        {
-            Mod8 mod8 = (Mod8)plugin;
-            /*foreach (var item in PlayerManager.localPlayer.GetComponents<Component>())
-            {
-                File.AppendAllText(Application.dataPath + "/../file.txt", item.GetType().ToString() + '\n');
-            }
-            foreach (GameObject item in GameObject.FindObjectsOfType(typeof(GameObject)))
-            {
-                File.AppendAllText(Application.dataPath + "/../file69.txt", item.name + '\n');
-            }*/
         }
     }
 }

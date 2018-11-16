@@ -1,5 +1,6 @@
 ﻿using Smod2;
 using Smod2.Attributes;
+using Smod2.Config;
 using System.Net;
 using System.Net.Sockets;
 
@@ -29,7 +30,7 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
             this.Info("Mod8 plugin enabled.");
             this.Info("Connecting to node.js server");
             tcp = new TcpClient();
-            tcp.Connect("127.0.0.1", 8080);
+            tcp.Connect(this.GetConfigString("tcpmapip"), this.GetConfigInt("tcpmapport"));
             s = tcp.GetStream();
             rm = new RoomManager();
         }
@@ -37,6 +38,8 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
         public override void Register()
         {
             this.AddEventHandlers(new Mod8EventHandler(this));
+            this.AddConfig(new ConfigSetting("tcpmapport", 8080, SettingType.NUMERIC, true, "The TcpClient port"));
+            this.AddConfig(new ConfigSetting("tcpmapip", "127.0.0.1", SettingType.STRING, true, "The TcpClient ip"));
             //this.AddCommand("pswd", new PasswordCmd(this));
         }
     }
