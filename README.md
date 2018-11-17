@@ -1,7 +1,7 @@
 # SERVER SIDE MINIMAP
 ## KNOWN ISSUES
 
-Map doesn't load until a full server restart
+Map doesn't load until a full server restart - Fixed
 
 Center is broken
 
