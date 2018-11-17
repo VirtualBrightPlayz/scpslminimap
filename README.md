@@ -1,4 +1,10 @@
 # SERVER SIDE MINIMAP
+## KNOWN ISSUES
+
+Map doesn't load until a full server restart
+
+Center is broken
+
 ## What is it?
 
 Glad you asked, it is a simple, yet configurable in-browser minimap for SCP:SL.
