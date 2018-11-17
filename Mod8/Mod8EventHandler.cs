@@ -71,7 +71,7 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
             }
             if (keyrm != string.Empty && connrm != string.Empty)
             {
-                plugin.Info(connrm + " has disconnected");
+                //plugin.Info(connrm + " has disconnected");
                 conns.Remove(connrm);
                 keys.Remove(keyrm);
             }
@@ -82,7 +82,7 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
             pTime -= Time.fixedDeltaTime;
             if (pTime < 0)
             {
-                pTime = 1;
+                pTime = ConfigManager.Manager.Config.GetIntValue("mimp_ping", 1);
                 try
                 {
                     var mod8 = (Mod8)plugin;
@@ -91,7 +91,7 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
                     {
                         mod8.tcp.Close();
                         mod8.tcp = new System.Net.Sockets.TcpClient();
-                        mod8.tcp.Connect(ConfigManager.Manager.Config.GetStringValue("tcpmapip", "127.0.0.1"), ConfigManager.Manager.Config.GetIntValue("tcpmapport", 8080));
+                        mod8.tcp.Connect(ConfigManager.Manager.Config.GetStringValue("mimp_tcpmapip", "127.0.0.1"), ConfigManager.Manager.Config.GetIntValue("mimp_tcpmapport", 8080));
                         mod8.s = mod8.tcp.GetStream();
                     }
 

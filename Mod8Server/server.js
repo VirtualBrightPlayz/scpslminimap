@@ -1,5 +1,13 @@
 //START CONFIG//
 
+//HTTP PORT
+//What port the minimap will be on
+const httpport = 8000;
+
+//GAME SOCKET PORT
+//The port where this will accept input from the SCP:SL server
+const gameport = 8080;
+
 //*only works if TEAMONLY does not equal 2
 
 //SCPRADIUS*
@@ -73,7 +81,7 @@ var sio = require('socket.io');
 var io = sio(http);
 
 var HOST = '127.0.0.1';
-var PORT = 8080;
+var PORT = gameport;
 
 var pdata;
 
@@ -335,8 +343,8 @@ io.on('connection', function (socket) {
 
 });
 
-http.listen(8000, function() {
-  console.log('listening on *:8000');
+http.listen(httpport, function() {
+  console.log('listening on *:' + httpport.toString());
 });
 
 

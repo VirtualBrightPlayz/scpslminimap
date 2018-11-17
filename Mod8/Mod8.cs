@@ -30,7 +30,7 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
             this.Info("Mod8 plugin enabled.");
             this.Info("Connecting to node.js server");
             tcp = new TcpClient();
-            tcp.Connect(ConfigManager.Manager.Config.GetStringValue("tcpmapip", "127.0.0.1"), ConfigManager.Manager.Config.GetIntValue("tcpmapport", 8080));
+            tcp.Connect(ConfigManager.Manager.Config.GetStringValue("mimp_tcpmapip", "127.0.0.1"), ConfigManager.Manager.Config.GetIntValue("mimp_tcpmapport", 8080));
             s = tcp.GetStream();
             rm = new RoomManager();
         }
@@ -38,8 +38,9 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
         public override void Register()
         {
             this.AddEventHandlers(new Mod8EventHandler(this));
-            this.AddConfig(new ConfigSetting("tcpmapport", 8080, SettingType.NUMERIC, true, "The TcpClient port"));
-            this.AddConfig(new ConfigSetting("tcpmapip", "127.0.0.1", SettingType.STRING, true, "The TcpClient ip"));
+            this.AddConfig(new ConfigSetting("mimp_tcpmapport", 8080, SettingType.NUMERIC, true, "The TcpClient port"));
+            this.AddConfig(new ConfigSetting("mimp_ping", 1, SettingType.NUMERIC, true, "How often data is sent to the node.js server"));
+            this.AddConfig(new ConfigSetting("mimp_tcpmapip", "127.0.0.1", SettingType.STRING, true, "The TcpClient ip"));
             //this.AddCommand("pswd", new PasswordCmd(this));
         }
     }
