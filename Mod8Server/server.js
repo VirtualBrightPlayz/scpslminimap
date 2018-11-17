@@ -8,6 +8,10 @@ const httpport = 8000;
 //The port where this will accept input from the SCP:SL server
 const gameport = 8080;
 
+//PING RATE
+//The time in milliseconds between data sent to MiniMap
+const pingrate = 1000;
+
 //*only works if TEAMONLY does not equal 2
 
 //SCPRADIUS*
@@ -300,7 +304,7 @@ var interval = setInterval(function () {
   //console.log("error parsing JSON");
   run = false;
   }
-}, 1000);
+}, pingrate);
 
 io.on('connection', function (socket) {
 
