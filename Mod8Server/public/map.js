@@ -322,7 +322,7 @@ function draw() {
     var role = player.role;
     if (Object.keys(translations[translation].Roles).indexOf(player.role) != -1) role = translations[translation].Roles[player.role];
     ctx.font = (4) + 'px serif';
-    ctx.fillText(player.name + " - " + player.role, 0, 0/*-player.posx, player.posz*/);
+    ctx.fillText(player.name + " - " + role, 0, 0/*-player.posx, player.posz*/);
   }
 
   //SCP Rings
@@ -343,7 +343,7 @@ function draw() {
       ctx.strokeStyle = ctx.fillStyle;
       var role = scp.role;
       if (Object.keys(translations[translation].Roles).indexOf(scp.role) != -1) role = translations[translation].Roles[scp.role];
-      ctx.fillText(scp.name + " - " + scp.role, -1 * parseInt(scp.posx) - Math.abs(parseInt(scp.radius) / 3), parseInt(scp.posz) + Math.abs(parseInt(scp.radius) / 3));
+      ctx.fillText(scp.name + " - " + role, -1 * parseInt(scp.posx) - Math.abs(parseInt(scp.radius) / 3), parseInt(scp.posz) + Math.abs(parseInt(scp.radius) / 3));
       ctx.beginPath();
       ctx.arc(-scp.posx, scp.posz, scp.radius, 0, 2 * Math.PI);
       ctx.stroke();
@@ -428,8 +428,8 @@ function center() {
       if (i >= players.length) { hasfound = true; throw new ReferenceError("OOF."); }
       if (players[i].posy < -300 && render == 1) { i++; continue; }
       else if (players[i].posy >= -300 && render != 1) { i++; continue; }
-      offsetx = parseInt(obj.players[i].posx);// + 100;// + parseInt(canvas.width/2);
-      offsety = parseInt(obj.players[i].posz);// + 100;// + parseInt(canvas.height/2);
+      offsetx = parseInt(players[i].posx);// / scale - (canvas.width / 2);// + parseInt(canvas.width/2);
+      offsety = parseInt(players[i].posz);// / scale - (canvas.height / 2);// + parseInt(canvas.height/2);
       hasfound = true;
     }
   } catch (e) {

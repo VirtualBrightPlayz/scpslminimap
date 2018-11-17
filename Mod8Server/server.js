@@ -82,227 +82,240 @@ var players = {};
 app.use('/', express.static(__dirname + '/public'));
 
 var interval = setInterval(function () {
-  //if (pdata == "") return;
+  //if (pdata === "") run = false;
   var data;
   try {
     data = JSON.parse(pdata);
-  } catch (e) {
-    //console.log("error parsing JSON");
-    return;
-  }
+    try {
+      if (teamonly == 1) {
+        var asockets = io.sockets.connected;
+        var sockets = Object.keys(asockets);
 
-  if (teamonly == 1) {
-    var asockets = io.sockets.sockets;
-    var sockets = Object.keys(asockets);
+        for (var i = 0; i < sockets.length; i++) {
 
-    for (var i = 0; i < sockets.length; i++) {
+          var socketid = sockets[i].toString();
+          var socket = asockets[socketid];
 
-      var socketid = sockets[i].toString();
-      var socket = asockets[sockets[i]];
-
-      if (Object.keys(players).indexOf(socketid) == -1) {
-        var send = JSON.parse(JSON.stringify(data));
-        send.players = [];
-        socket.emit('map', JSON.stringify(send));
-      }
-      else {
-        var send = JSON.parse(JSON.stringify(data));
-        send.players = [];
-        for (var j = 0; j < data.players.length; j++) {
-          var player = data.players[j];
-          if (players[socketid] === player.steamid.toString()) {
-            for (var k = 0; k < data.players.length; k++) {
-              var otherplayer = data.players[k];
-              if (otherplayer.team === player.team) {
-                var newplayer = JSON.parse(JSON.stringify(otherplayer));
-                newplayer.key = "";
-                newplayer.ip = "";
-                send.players.push(newplayer);
-              }
-              else if (otherplayer.team === "SCP") {
-                var scpplayer = JSON.parse(JSON.stringify(otherplayer));
-                if (player.posy < -300 && otherplayer.posy >= -300) continue;
-                else if (player.posy >= -300 && otherplayer.posy < -300) continue;
-                var a = player.posx - otherplayer.posx;
-                var b = player.posz - otherplayer.posz;
-                var c = Math.sqrt( a*a + b*b );
-                scpplayer.key = "";
-                scpplayer.ip = "";
-                scpplayer.posx = player.posx;
-                scpplayer.posy = player.posy;
-                scpplayer.posz = player.posz;
-                scpplayer.radius = Math.max(c - (c % scpradius), scpradiusmin);
-                if (c - (c % scpradius) > scpradiusmax) scpplayer.radius = 0;
-                if (send.scpradii == undefined) send.scpradii = [];
-                send.scpradii.push(scpplayer);
-              }
-            }
+          if (Object.keys(players).indexOf(socketid) == -1) {
+            var send = JSON.parse(JSON.stringify(data));
+            send.players = [];
             socket.emit('map', JSON.stringify(send));
-            return;
+          }
+          else {
+            var send = JSON.parse(JSON.stringify(data));
+            send.players = [];
+            for (var j = 0; j < data.players.length; j++) {
+              var player = data.players[j];
+              if (players[socketid] === player.steamid.toString()) {
+                for (var k = 0; k < data.players.length; k++) {
+                  var otherplayer = data.players[k];
+                  if (otherplayer.team === player.team) {
+                    var newplayer = JSON.parse(JSON.stringify(otherplayer));
+                    newplayer.key = "";
+                    newplayer.ip = "";
+                    send.players.push(newplayer);
+                  }
+                  else if (otherplayer.team === "SCP") {
+                    var scpplayer = JSON.parse(JSON.stringify(otherplayer));
+                    if (player.posy < -300 && otherplayer.posy >= -300) continue;
+                    else if (player.posy >= -300 && otherplayer.posy < -300) continue;
+                    var a = player.posx - otherplayer.posx;
+                    var b = player.posz - otherplayer.posz;
+                    var c = Math.sqrt( a*a + b*b );
+                    scpplayer.key = "";
+                    scpplayer.ip = "";
+                    scpplayer.posx = player.posx;
+                    scpplayer.posy = player.posy;
+                    scpplayer.posz = player.posz;
+                    scpplayer.radius = Math.max(c - (c % scpradius), scpradiusmin);
+                    if (c - (c % scpradius) > scpradiusmax) scpplayer.radius = 0;
+                    if (send.scpradii == undefined) send.scpradii = [];
+                    send.scpradii.push(scpplayer);
+                  }
+                }
+                socket.emit('map', JSON.stringify(send));
+                //return;
+              }
+
+            }
+            //socket.emit('map', JSON.stringify(send));
           }
 
         }
-        socket.emit('map', JSON.stringify(send));
       }
-
-    }
-  }
-  else if (teamonly == 2) {
-    var send = JSON.parse(JSON.stringify(data));
-    for (var i = 0; i < send.players.length; i++) {
-      send.players[i].ip = "";
-      send.players[i].key = "";
-    }
-    io.emit('map', JSON.stringify(send));
-  }
-  else if (teamonly == 0) {
-    var asockets = io.sockets.sockets;
-    var sockets = Object.keys(asockets);
-
-    for (var i = 0; i < sockets.length; i++) {
-
-      var socketid = sockets[i].toString();
-      var socket = asockets[sockets[i]];
-
-      if (Object.keys(players).indexOf(socketid) == -1)
-      {
+      else if (teamonly == 2) {
         var send = JSON.parse(JSON.stringify(data));
-        send.players = [];
-        socket.emit(send);
-        continue;
+        for (var i = 0; i < send.players.length; i++) {
+          send.players[i].ip = "";
+          send.players[i].key = "";
+        }
+        io.emit('map', JSON.stringify(send));
       }
+      else if (teamonly == 0) {
+        var asockets = io.sockets.connected;
+        var sockets = Object.keys(asockets);
 
-      if (players[socketid] != undefined || players[socketid] != null) {
-        var send = JSON.parse(JSON.stringify(data));
-        send.players = [];
+        for (var i = 0; i < sockets.length; i++) {
 
-        if (players[socketid] != undefined) {
-          for (var j = 0; j < data.players.length; j++) {
-            var player = data.players[j];
-            if (players[socketid] === player.steamid) {
-              var newplayer = JSON.parse(JSON.stringify(player));
-              newplayer.key = "";
-              newplayer.ip = "";
-              send.players.push(newplayer);
-              if (scpradius == 0) break;
-            }
-            if (scpradius != 0) {
-              for (var k = 0; k < data.players.length; k++) {
-                var otherplayer = data.players[k];
-                if (otherplayer.team === "SCP") {
-                  var scpplayer = JSON.parse(JSON.stringify(otherplayer));
-                  if (player.posy < -300 && otherplayer.posy >= -300) continue;
-                  else if (player.posy >= -300 && otherplayer.posy < -300) continue;
-                  var a = player.posx - otherplayer.posx;
-                  var b = player.posz - otherplayer.posz;
-                  var c = Math.sqrt( a*a + b*b );
-                  scpplayer.key = "";
-                  scpplayer.ip = "";
-                  scpplayer.posx = player.posx;
-                  scpplayer.posy = player.posy;
-                  scpplayer.posz = player.posz;
-                  scpplayer.radius = Math.max(Math.min(c - (c % scpradius), scpradiusmax), scpradiusmin);
-                  if (c - (c % scpradius) > scpradiusmax) scpplayer.radius = 0;
-                  if (send.scpradii == undefined) send.scpradii = [];
-                  send.scpradii.push(scpplayer);
+          var socketid = sockets[i].toString();
+          var socket = asockets[socketid];
+
+          if (Object.keys(players).indexOf(socketid) == -1)
+          {
+            var send = JSON.parse(JSON.stringify(data));
+            send.players = [];
+            socket.emit(send);
+            continue;
+          }
+
+          if (players[socketid] != undefined || players[socketid] != null) {
+            var send = JSON.parse(JSON.stringify(data));
+            send.players = [];
+
+            if (players[socketid] != undefined) {
+              for (var j = 0; j < data.players.length; j++) {
+                var player = data.players[j];
+                if (players[socketid] === player.steamid) {
+                  var newplayer = JSON.parse(JSON.stringify(player));
+                  newplayer.key = "";
+                  newplayer.ip = "";
+                  send.players.push(newplayer);
+                  if (scpradius == 0) break;
+                }
+                if (scpradius != 0) {
+                  for (var k = 0; k < data.players.length; k++) {
+                    var otherplayer = data.players[k];
+                    if (otherplayer.team === "SCP") {
+                      var scpplayer = JSON.parse(JSON.stringify(otherplayer));
+                      if (player.posy < -300 && otherplayer.posy >= -300) continue;
+                      else if (player.posy >= -300 && otherplayer.posy < -300) continue;
+                      var a = player.posx - otherplayer.posx;
+                      var b = player.posz - otherplayer.posz;
+                      var c = Math.sqrt( a*a + b*b );
+                      scpplayer.key = "";
+                      scpplayer.ip = "";
+                      scpplayer.posx = player.posx;
+                      scpplayer.posy = player.posy;
+                      scpplayer.posz = player.posz;
+                      scpplayer.radius = Math.max(Math.min(c - (c % scpradius), scpradiusmax), scpradiusmin);
+                      if (c - (c % scpradius) > scpradiusmax) scpplayer.radius = 0;
+                      if (send.scpradii == undefined) send.scpradii = [];
+                      send.scpradii.push(scpplayer);
+                    }
+                  }
                 }
               }
+              socket.emit('map', JSON.stringify(send));
             }
+
           }
-          socket.emit('map', JSON.stringify(send));
+
         }
-
       }
+      else if (teamonly == 3) {
+        var asockets = io.sockets.connected;
+        var sockets = Object.keys(asockets);
 
-    }
-  }
-  else if (teamonly == 3) {
-    var asockets = io.sockets.sockets;
-    var sockets = Object.keys(asockets);
+        for (var i = 0; i < sockets.length; i++) {
 
-    for (var i = 0; i < sockets.length; i++) {
+          var socketid = sockets[i].toString();
+          var socket = asockets[socketid];
 
-      var socketid = sockets[i].toString();
-      var socket = asockets[sockets[i]];
-
-      if (Object.keys(players).indexOf(socketid) == -1) {
-        var send = JSON.parse(JSON.stringify(data));
-        send.players = [];
-        socket.emit('map', JSON.stringify(send));
-      }
-      else {
-        var send = JSON.parse(JSON.stringify(data));
-        send.players = [];
-        for (var j = 0; j < data.players.length; j++) {
-          var player = data.players[j];
-          if (players[socketid] === player.steamid.toString()) {
-            for (var k = 0; k < data.players.length; k++) {
-              var otherplayer = data.players[k];
-              if ((otherplayer.team === player.team) ||
-                (player.team === "CLASSD" && otherplayer.team === "CHAOS_INSURGENCY") ||
-                (player.team === "CHAOS_INSURGENCY" && otherplayer.team === "CLASSD") ||
-                (player.team === "NINETAILFOX" && otherplayer.team === "SCIENTISTS") ||
-                (player.team === "SCIENTISTS" && otherplayer.team === "NINETAILFOX") ||
-                player.team === "SPECTATOR" ||
-                player.team === "NONE" ||
-                player.team === "TUTORIAL" ||
-                otherplayer.team === "TUTORIAL"
-              ) {
-                var newplayer = JSON.parse(JSON.stringify(otherplayer));
-                newplayer.key = "";
-                newplayer.ip = "";
-                send.players.push(newplayer);
-              }
-              else if (otherplayer.team === "SCP") {
-                var scpplayer = JSON.parse(JSON.stringify(otherplayer));
-                if (player.posy < -300 && otherplayer.posy >= -300) continue;
-                else if (player.posy >= -300 && otherplayer.posy < -300) continue;
-                var a = player.posx - otherplayer.posx;
-                var b = player.posz - otherplayer.posz;
-                var c = Math.sqrt( a*a + b*b );
-                scpplayer.key = "";
-                scpplayer.ip = "";
-                scpplayer.posx = player.posx;
-                scpplayer.posy = player.posy;
-                scpplayer.posz = player.posz;
-                scpplayer.radius = Math.max(Math.min(c - (c % scpradius), scpradiusmax), scpradiusmin);
-                if (c - (c % scpradius) > scpradiusmax) scpplayer.radius = 0;
-                if (send.scpradii == undefined) send.scpradii = [];
-                send.scpradii.push(scpplayer);
-              }
-            }
+          if (!(socketid in players)) {
+            var send = JSON.parse(JSON.stringify(data));
+            send.players = [];
             socket.emit('map', JSON.stringify(send));
-            return;
+          }
+          else {
+            var send = JSON.parse(JSON.stringify(data));
+            send.players = [];
+            for (var j = 0; j < data.players.length; j++) {
+              var player = data.players[j];
+              if (players[socketid] === player.steamid.toString()) {
+                for (var k = 0; k < data.players.length; k++) {
+                  var otherplayer = data.players[k];
+                  if ((otherplayer.team === player.team) ||
+                    (player.team === "CLASSD" && otherplayer.team === "CHAOS_INSURGENCY") ||
+                    (player.team === "CHAOS_INSURGENCY" && otherplayer.team === "CLASSD") ||
+                    (player.team === "NINETAILFOX" && otherplayer.team === "SCIENTISTS") ||
+                    (player.team === "SCIENTISTS" && otherplayer.team === "NINETAILFOX") ||
+                    player.team === "SPECTATOR" ||
+                    player.team === "NONE" ||
+                    player.team === "TUTORIAL" ||
+                    otherplayer.team === "TUTORIAL"
+                  ) {
+                    var newplayer = JSON.parse(JSON.stringify(otherplayer));
+                    newplayer.key = "";
+                    newplayer.ip = "";
+                    send.players.push(newplayer);
+                  }
+                  else if (otherplayer.team === "SCP") {
+                    var scpplayer = JSON.parse(JSON.stringify(otherplayer));
+                    if (player.posy < -300 && otherplayer.posy >= -300) continue;
+                    else if (player.posy >= -300 && otherplayer.posy < -300) continue;
+                    var a = player.posx - otherplayer.posx;
+                    var b = player.posz - otherplayer.posz;
+                    var c = Math.sqrt( a*a + b*b );
+                    scpplayer.key = "";
+                    scpplayer.ip = "";
+                    scpplayer.posx = player.posx;
+                    scpplayer.posy = player.posy;
+                    scpplayer.posz = player.posz;
+                    scpplayer.radius = Math.max(Math.min(c - (c % scpradius), scpradiusmax), scpradiusmin);
+                    if (c - (c % scpradius) > scpradiusmax) scpplayer.radius = 0;
+                    if (send.scpradii == undefined) send.scpradii = [];
+                    send.scpradii.push(scpplayer);
+                  }
+                }
+                socket.emit('map', JSON.stringify(send));
+                //return;
+              }
+              /*else {
+                console.log(player);
+                console.log("err: " + (socketid in players).toString());
+              }*/
+            }
+            //socket.emit('map', JSON.stringify(send));
           }
 
         }
-        socket.emit('map', JSON.stringify(send));
       }
 
+      /*var ndata = JSON.stringify(data);*/
+      //io.emit('map', ndata);
     }
-  }
+    catch (e) {
+      console.log(e + "error sending client data!");
+    }
 
-  /*var ndata = JSON.stringify(data);*/
-  //io.emit('map', ndata);
+  } catch (e) {
+  //console.log("error parsing JSON");
+  run = false;
+  }
 }, 1000);
 
 io.on('connection', function (socket) {
 
+  var sockid = socket.id;
+
   socket.on('keyid', function (data) {
     try {
       var jdata;
+      var run = true;
       try {
         jdata = JSON.parse(pdata);
       } catch (e) {
         console.log("error parsing JSON");
-        return;
+        run = false;
       }
-      for (var i = 0; i < jdata.players.length; i++) {
-        var player = jdata.players[i];
-        if (data.key === player.key && data.steamid === player.steamid)
-        {
-          players[socket.id.toString()] = player.steamid.toString();
-          return;
+      if (run) {
+        for (var i = 0; i < jdata.players.length; i++) {
+          var player = jdata.players[i];
+          if (data.key === player.key && data.steamid === player.steamid)
+          {
+            players[socket.id.toString()] = player.steamid.toString();
+            break;
+          }
         }
       }
     } catch (e) {
@@ -310,12 +323,13 @@ io.on('connection', function (socket) {
     }
   });
 
-  socket.on('disconnect', function(){
+  socket.on('disconnect', function (reason) {
     try {
       //Free up RAM.
-      delete players[socket.io.toString()];
-      delete io.sockets.sockets[io.sockets.sockets.indexOf(socket)];
+      console.log(reason);
+      console.log(delete players[sockid.toString()]);
     } catch (e) {
+      console.log(e);
     }
   });
 
