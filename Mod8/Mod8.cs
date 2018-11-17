@@ -30,7 +30,7 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
             this.Info("Mod8 plugin enabled.");
             this.Info("Connecting to node.js server");
             tcp = new TcpClient();
-            tcp.Connect(this.GetConfigString("tcpmapip"), this.GetConfigInt("tcpmapport"));
+            tcp.Connect(ConfigManager.Manager.Config.GetStringValue("tcpmapip", "127.0.0.1"), ConfigManager.Manager.Config.GetIntValue("tcpmapport", 8080));
             s = tcp.GetStream();
             rm = new RoomManager();
         }

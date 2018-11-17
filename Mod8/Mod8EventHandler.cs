@@ -29,12 +29,12 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
 
         void IEventHandlerPlayerJoin.OnPlayerJoin(PlayerJoinEvent ev)
         {
-            if (keys.ContainsKey(ev.Player.SteamId))
+            /*if (keys.ContainsKey(ev.Player.SteamId))
             {
                 ev.Player.SendConsoleMessage("Your SteamID is: " + ev.Player.SteamId);
                 ev.Player.SendConsoleMessage("Your key is: " + keys[ev.Player.SteamId]);
                 return;
-            }
+            }*/
             string newkey = "";
             for (int i = 0; i < 5; i++)
             {
@@ -86,6 +86,14 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
                 try
                 {
                     var mod8 = (Mod8)plugin;
+
+                    if (!mod8.tcp.Connected || !mod8.s.CanWrite)
+                    {
+                        mod8.tcp.Close();
+                        mod8.tcp = new System.Net.Sockets.TcpClient();
+                        mod8.tcp.Connect(ConfigManager.Manager.Config.GetStringValue("tcpmapip", "127.0.0.1"), ConfigManager.Manager.Config.GetIntValue("tcpmapport", 8080));
+                        mod8.s = mod8.tcp.GetStream();
+                    }
 
                     string str = string.Empty;
                     str += " { ";
@@ -173,6 +181,7 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
                     {
                         var play = pls[i];
                         GameObject obj = (GameObject)pls[i].GetGameObject();
+                        
                         str += " { ";
 
                         str += " \"posx\": \"" + obj.transform.position.x.ToString() + "\", ";
@@ -187,7 +196,14 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
                         str += " \"role\": \"" + play.TeamRole.Role.ToString() + "\", ";
                         str += " \"ip\": \"" + play.IpAddress + "\", ";
                         str += " \"steamid\": \"" + play.SteamId + "\", ";
-                        str += " \"key\": \"" + keys[play.SteamId] + "\", ";
+                        if (keys.ContainsKey(play.SteamId))
+                        {
+                            str += " \"key\": \"" + keys[play.SteamId] + "\", ";
+                        }
+                        else
+                        {
+                            str += " \"key\": \"errorfindingkey\", ";
+                        }
                         str += " \"name\": \"" + play.Name + "\" ";
                         if (i + 1 >= pls.Count)
                         {
@@ -208,7 +224,7 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
                 }
                 catch (Exception e)
                 {
-                    plugin.Info(e.Message);
+                    plugin.Info(e.StackTrace);
                 }
             }
         }
