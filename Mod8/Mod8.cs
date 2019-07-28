@@ -37,11 +37,19 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
 
         public override void Register()
         {
-            this.AddEventHandlers(new Mod8EventHandler(this));
-            this.AddConfig(new ConfigSetting("mimp_tcpmapport", 8080, SettingType.NUMERIC, true, "The TcpClient port"));
-            this.AddConfig(new ConfigSetting("mimp_ping", 1, SettingType.NUMERIC, true, "How often data is sent to the node.js server"));
-            this.AddConfig(new ConfigSetting("mimp_tcpmapip", "127.0.0.1", SettingType.STRING, true, "The TcpClient ip"));
-            //this.AddCommand("pswd", new PasswordCmd(this));
+            this.AddConfig(new ConfigSetting("mimp_disable", false, true, "True to disable the plugin"));
+            if (!ConfigManager.Manager.Config.GetBoolValue("mimp_disable", false))
+            {
+                this.AddEventHandlers(new Mod8EventHandler(this));
+                this.AddConfig(new ConfigSetting("mimp_tcpmapport", 8080, true, "The TcpClient port"));
+                this.AddConfig(new ConfigSetting("mimp_ping", 1, true, "How often data is sent to the node.js server"));
+                this.AddConfig(new ConfigSetting("mimp_tcpmapip", "127.0.0.1", true, "The TcpClient ip"));
+                //this.AddCommand("pswd", new PasswordCmd(this));
+            }
+            else
+            {
+                this.Info("Plugin disabled via config");
+            }
         }
     }
 }

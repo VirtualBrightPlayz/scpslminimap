@@ -66,6 +66,7 @@ window.onload = function () {
   socket.on('map', (data) => {
     if (data == "") return;
     pdata = data;
+    //console.log(data);
   });
 
   setInterval(function () {
@@ -90,16 +91,18 @@ function draw() {
   var obj = JSON.parse(pdata);
   ctx.textAlign = "center";
 
-  //Light Containment Zone Rooms
-  for (var i = 0; i < obj.lczrooms.length; i++) {
-    if (render != 1) break;
-    var room = obj.lczrooms[i];
+
+  for (var i = 0; i < obj.rooms.length; i++) {
+    var room = obj.rooms[i];
+    if (room.posy < -300 && render == 1) continue;
+    else if (room.posy >= -300 && render != 1) continue;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.translate(coffx, coffy);
     //ctx.translate(offsetx * scale, offsety * scale);
     ctx.scale(cscale, cscale);
-    ctx.translate(-room.posx, room.posz);
-    ctx.rotate(room.roty * Math.PI / 180);
+    ctx.translate(/*-*/room.posx, -room.posz);
+    ctx.scale(1, -1);
+    ctx.rotate((-room.roty + 180) * Math.PI / 180);
     // //START: Debug rotation lines
     // ctx.beginPath();
     // ctx.moveTo(0, 0);
@@ -138,8 +141,9 @@ function draw() {
     else if (src.width < src.height && h == 21.3) {
       h = src.height / (src.width / 21.3);
     }
+    //ctx.scale(1, -1);
     ctx.drawImage(src, (/*src.width +*/-w / 2) + posx, (/*src.height +*/-h / 2) + posy, w, h);
-    ctx.rotate(-room.roty * Math.PI / 180);
+    ctx.rotate(room.roty * Math.PI / 180);
     ctx.fillStyle = 'rgb(255,255,255)';
     ctx.font = (2) + 'px serif';
     var foundRoomName = false;
@@ -149,150 +153,16 @@ function draw() {
       var roomname = roomtrans[roomid];
       if (room.id.startsWith(roomid)) {
         foundRoomName = true;
+        ctx.scale(-1, 1);
         ctx.fillText(roomname, /*-room.posx*/0, /*room.posz*/0);
         break;
       }
     }
     if (!foundRoomName) {
+      ctx.scale(-1, 1);
       ctx.fillText(room.id, /*-room.posx*/0, /*room.posz*/0);
     }
     // ctx.fillText(room.id, -room.posx, room.posz);
-  }
-
-  //Heavy Containment Zone Rooms
-  for (var i = 0; i < obj.hczrooms.length; i++) {
-    if (render != 2) break;
-    var room = obj.hczrooms[i];
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.translate(coffx, coffy);
-    // ctx.translate(offsetx * scale, offsety * scale);
-    ctx.scale(cscale, cscale);
-    ctx.translate(-room.posx, room.posz);
-    ctx.rotate(room.roty * Math.PI / 180);
-    // //START: Debug rotation lines
-    // ctx.beginPath();
-    // ctx.moveTo(0, 0);
-    // ctx.lineTo(0, 10);
-    // ctx.strokeStyle = ctx.fillStyle;
-    // ctx.stroke();
-    // ctx.closePath();
-    // //END: Debug rotation lines
-    ctx.fillStyle = 'rgb(255,255,255)';
-    ctx.imageSmoothingEnabled = false;
-    var w = 21.3;
-    var h = 21.3;
-    var posx = 0;
-    var posy = 0;
-    var src = new Image();
-    for (var k = 0; k < Object.keys(imageslist).length; k++) {
-      var roomid = Object.keys(imageslist)[k];
-      if (room.id.startsWith(roomid)) {
-        src = imageslist[roomid];
-        break;
-      }
-    }
-    for (var k = 0; k < Object.keys(imagesizes).length; k++) {
-      var roomid = Object.keys(imagesizes)[k];
-      if (room.id.startsWith(roomid)) {
-        w = imagesizes[roomid].x;
-        h = imagesizes[roomid].y;
-        posx = imagesizes[roomid].posx;
-        posy = imagesizes[roomid].posy;
-        break;
-      }
-    }
-    if (src.width > src.height && w == 21.3) {
-      w = src.width / (src.height / 21.3);
-    }
-    else if (src.width < src.height && h == 21.3) {
-      h = src.height / (src.width / 21.3);
-    }
-    ctx.drawImage(src, (/*src.width +*/-w / 2) + posx, (/*src.height +*/-h / 2) + posy, w, h);
-    ctx.rotate(-room.roty * Math.PI / 180);
-    ctx.fillStyle = 'rgb(255,255,255)';
-    ctx.font = (2) + 'px serif';
-    var foundRoomName = false;
-    var roomtrans = translations[translation].Rooms;
-    for (var k = 0; k < Object.keys(roomtrans).length; k++) {
-      var roomid = Object.keys(roomtrans)[k];
-      var roomname = roomtrans[roomid];
-      if (room.id.startsWith(roomid)) {
-        foundRoomName = true;
-        ctx.fillText(roomname, /*-room.posx*/0, /*room.posz*/0);
-        break;
-      }
-    }
-    if (!foundRoomName) {
-      ctx.fillText(room.id, /*-room.posx*/0, /*room.posz*/0);
-    }
-  }
-
-  //Entrance Zone Rooms
-  for (var i = 0; i < obj.ezrooms.length; i++) {
-    if (render != 2) break;
-    var room = obj.ezrooms[i];
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.translate(coffx, coffy);
-    // ctx.translate(offsetx * scale, offsety * scale);
-    ctx.scale(cscale, cscale);
-    ctx.translate(-room.posx, room.posz);
-    ctx.rotate((room.roty * Math.PI / 180) + 90 * Math.PI / 180);
-    // //START: Debug rotation lines
-    // ctx.beginPath();
-    // ctx.moveTo(0, 0);
-    // ctx.lineTo(0, 10);
-    // ctx.strokeStyle = ctx.fillStyle;
-    // ctx.stroke();
-    // ctx.closePath();
-    // //END: Debug rotation lines
-    ctx.fillStyle = 'rgb(255,255,255)';
-    ctx.imageSmoothingEnabled = false;
-    var w = 21.3;
-    var h = 21.3;
-    var posx = 0;
-    var posy = 0;
-    var src = new Image();
-    for (var k = 0; k < Object.keys(imageslist).length; k++) {
-      var roomid = Object.keys(imageslist)[k];
-      if (room.id.startsWith(roomid)) {
-        src = imageslist[roomid];
-        break;
-      }
-    }
-    for (var k = 0; k < Object.keys(imagesizes).length; k++) {
-      var roomid = Object.keys(imagesizes)[k];
-      if (room.id.startsWith(roomid)) {
-        w = imagesizes[roomid].x;
-        h = imagesizes[roomid].y;
-        posx = imagesizes[roomid].posx;
-        posy = imagesizes[roomid].posy;
-        break;
-      }
-    }
-    if (src.width > src.height && w == 21.3) {
-      w = src.width / (src.height / 21.3);
-    }
-    else if (src.width < src.height && h == 21.3) {
-      h = src.height / (src.width / 21.3);
-    }
-    ctx.drawImage(src, (/*src.width +*/-w / 2) + posx, (/*src.height +*/-h / 2) + posy, w, h);
-    ctx.rotate((-room.roty * Math.PI / 180) - 90 * Math.PI / 180);
-    ctx.fillStyle = 'rgb(255,255,255)';
-    ctx.font = (2) + 'px serif';
-    var foundRoomName = false;
-    var roomtrans = translations[translation].Rooms;
-    for (var k = 0; k < Object.keys(roomtrans).length; k++) {
-      var roomid = Object.keys(roomtrans)[k];
-      var roomname = roomtrans[roomid];
-      if (room.id.startsWith(roomid)) {
-        foundRoomName = true;
-        ctx.fillText(roomname, /*-room.posx*/0, /*room.posz*/0);
-        break;
-      }
-    }
-    if (!foundRoomName) {
-      ctx.fillText(room.id, /*-room.posx*/0, /*room.posz*/0);
-    }
   }
 
   //Players
@@ -310,15 +180,17 @@ function draw() {
     else if (player.team == "SCIENTISTS") ctx.fillStyle = 'rgb(229, 218, 57)';
     else if (player.team == "SCP") ctx.fillStyle = 'rgb(255, 0, 0)';
     else ctx.fillStyle = 'rgb(255, 255, 255)';//continue;
-    ctx.translate(-player.posx, player.posz);
-    ctx.rotate((player.roty) * Math.PI / 180);
+    ctx.translate(/*-*/player.posx, -player.posz);
+    ctx.scale(1, -1);
+    ctx.rotate((-player.roty + 180) * Math.PI / 180);
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(0, 10);
     ctx.strokeStyle = ctx.fillStyle;
     ctx.stroke();
     ctx.closePath();
-    ctx.rotate((-player.roty) * Math.PI / 180);
+    ctx.scale(1, -1);
+    ctx.rotate((-player.roty + 180) * Math.PI / 180);
     var role = player.role;
     if (Object.keys(translations[translation].Roles).indexOf(player.role) != -1) role = translations[translation].Roles[player.role];
     ctx.font = (4) + 'px serif';
@@ -345,7 +217,7 @@ function draw() {
       if (Object.keys(translations[translation].Roles).indexOf(scp.role) != -1) role = translations[translation].Roles[scp.role];
       ctx.fillText(scp.name + " - " + role, -1 * parseInt(scp.posx) - Math.abs(parseInt(scp.radius) / 3), parseInt(scp.posz) + Math.abs(parseInt(scp.radius) / 3));
       ctx.beginPath();
-      ctx.arc(-scp.posx, scp.posz, scp.radius, 0, 2 * Math.PI);
+      ctx.arc(scp.posx, -scp.posz, scp.radius, 0, 2 * Math.PI);
       ctx.stroke();
       ctx.closePath();
     }
@@ -419,7 +291,7 @@ function changeRender() {
 }
 
 function center() {
-  try {
+  /*try {
     var obj = JSON.parse(pdata);
     var hasfound = false;
     var i = 0;
@@ -449,7 +321,7 @@ function center() {
     } catch (e) {
       console.log(e + " - no place to reset to.");
     }
-  }
+  }*/
 }
 
 function mousedown(e) {

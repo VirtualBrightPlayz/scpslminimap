@@ -1,6 +1,6 @@
 ﻿using Smod2;
 using Smod2.Commands;
-
+/*
 namespace VirtualBrightPlayz.SCPSL.Mod8
 {
     internal class PasswordCmd : ICommandHandler
@@ -28,4 +28,4 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
             return new string[] { };
         }
     }
-}
+}*/

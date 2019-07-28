@@ -91,14 +91,101 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
                     {
                         mod8.tcp.Close();
                         mod8.tcp = new System.Net.Sockets.TcpClient();
-                        mod8.tcp.Connect(ConfigManager.Manager.Config.GetStringValue("mimp_tcpmapip", "127.0.0.1"), ConfigManager.Manager.Config.GetIntValue("mimp_tcpmapport", 8080));
-                        mod8.s = mod8.tcp.GetStream();
+                        try
+                        {
+                            mod8.tcp.Connect(ConfigManager.Manager.Config.GetStringValue("mimp_tcpmapip", "127.0.0.1"), ConfigManager.Manager.Config.GetIntValue("mimp_tcpmapport", 8080));
+                            mod8.s = mod8.tcp.GetStream();
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
                     }
 
                     string str = string.Empty;
                     str += " { ";
-                    str += " \"lczrooms\": [ ";
-                    var objs = GameObject.Find("LightRooms").transform;
+                    str += " \"rooms\": [ ";
+                    var rooms = plugin.Server.Map.Get079InteractionRooms(Scp079InteractionType.CAMERA);
+                    bool first = true;
+                    foreach (var room in rooms)
+                    {
+                        if (room.ZoneType != ZoneType.UNDEFINED)
+                        {
+                            if (first)
+                            {
+                                str += " { ";
+                                first = false;
+                            }
+                            else
+                                str += ", { ";
+                            var obj = (GameObject)room.GetGameObject();
+                            str += " \"posx\": \"" + obj.transform.position.x.ToString() + "\", ";
+                            str += " \"posy\": \"" + obj.transform.position.y.ToString() + "\", ";
+                            str += " \"posz\": \"" + obj.transform.position.z.ToString() + "\", ";
+
+                            str += " \"rotx\": \"" + obj.transform.rotation.eulerAngles.x.ToString() + "\", ";
+                            /*if (room.ZoneType == ZoneType.ENTRANCE && (room.RoomType == RoomType.INTERCOM || room.RoomType == RoomType.CURVE))
+                            {
+                                str += " \"roty\": \"" + (obj.transform.localRotation.eulerAngles.y - 270).ToString() + "\", ";
+                            }
+                            else if (room.ZoneType == ZoneType.ENTRANCE && !(room.RoomType == RoomType.INTERCOM || room.RoomType == RoomType.CURVE))
+                            {
+                                str += " \"roty\": \"" + (obj.transform.localRotation.eulerAngles.y + 90).ToString() + "\", ";
+                            }*/
+                            if (room.ZoneType == ZoneType.ENTRANCE)
+                                str += " \"roty\": \"" + (obj.transform.rotation.eulerAngles.y + 90f).ToString() + "\", ";
+                            else
+                                str += " \"roty\": \"" + (obj.transform.rotation.eulerAngles.y).ToString() + "\", ";
+                            str += " \"rotz\": \"" + obj.transform.rotation.eulerAngles.z.ToString() + "\", ";
+
+                            str += " \"id\": \"" + room.RoomType + "\" ";
+                            str += " }";
+                        }
+                    }
+                    str += " ], ";
+                    str += " \"players\": [ ";
+                    var pls = plugin.Server.GetPlayers();
+                    for (int i = 0; i < pls.Count; i++)
+                    {
+                        var play = pls[i];
+                        GameObject obj = (GameObject)pls[i].GetGameObject();
+
+                        str += " { ";
+
+                        str += " \"posx\": \"" + obj.transform.position.x.ToString() + "\", ";
+                        str += " \"posy\": \"" + obj.transform.position.y.ToString() + "\", ";
+                        str += " \"posz\": \"" + obj.transform.position.z.ToString() + "\", ";
+
+                        str += " \"rotx\": \"" + obj.transform.rotation.eulerAngles.x.ToString() + "\", ";
+                        str += " \"roty\": \"" + obj.transform.rotation.eulerAngles.y.ToString() + "\", ";
+                        str += " \"rotz\": \"" + obj.transform.rotation.eulerAngles.z.ToString() + "\", ";
+
+                        str += " \"team\": \"" + play.TeamRole.Team.ToString() + "\", ";
+                        str += " \"role\": \"" + play.TeamRole.Role.ToString() + "\", ";
+                        str += " \"ip\": \"" + play.IpAddress + "\", ";
+                        str += " \"steamid\": \"" + play.SteamId + "\", ";
+                        if (keys.ContainsKey(play.SteamId))
+                        {
+                            str += " \"key\": \"" + keys[play.SteamId] + "\", ";
+                        }
+                        else
+                        {
+                            str += " \"key\": \"errorfindingkey\", ";
+                        }
+                        str += " \"name\": \"" + play.Name + "\" ";
+                        if (i + 1 >= pls.Count)
+                        {
+                            str += " } ";
+                        }
+                        else
+                        {
+                            str += " }, ";
+                        }
+                    }
+                    str += " ] ";
+                    str += " } ";
+                    str += ";";
+                    /*var objs = GameObject.Find("LightRooms").transform;
                     for (int i = 0; i < objs.childCount; i++)
                     {
                         var obj = objs.GetChild(i).gameObject;
@@ -124,7 +211,7 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
                     str += " ], ";
 
                     str += " \"hczrooms\": [ ";
-                    var objs2 = GameObject.Find("Heavy rooms").transform;
+                    var objs2 = GameObject.Find("HeavyRooms").transform;
                     for (int i = 0; i < objs2.childCount; i++)
                     {
                         var obj = objs2.GetChild(i).gameObject;
@@ -216,7 +303,7 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
                     }
                     str += " ] ";
                     str += " } ";
-                    str += ";";
+                    str += ";";*/
                     ASCIIEncoding asen = new ASCIIEncoding();
                     byte[] ba = asen.GetBytes(str);
 
@@ -224,7 +311,7 @@ namespace VirtualBrightPlayz.SCPSL.Mod8
                 }
                 catch (Exception e)
                 {
-                    plugin.Info(e.StackTrace);
+                    //plugin.Info(e.StackTrace);
                 }
             }
         }

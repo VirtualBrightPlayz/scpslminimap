@@ -33,7 +33,7 @@ var scpradiusmax = 100;
 //1: only show who is on your team
 //2: show everyone
 //3: only show who is on your side
-var teamonly = 3;
+var teamonly = 2;
 
 //END CONFIG//
 
@@ -297,7 +297,7 @@ var interval = setInterval(function () {
       //io.emit('map', ndata);
     }
     catch (e) {
-      console.log(e + "error sending client data!");
+      console.log(e + " error sending client data!");
     }
 
   } catch (e) {
@@ -363,6 +363,7 @@ net.createServer(function(sock) {
     // Add a 'data' event handler to this instance of socket
     sock.on('data', function(data) {
         pdata = data.toString().split(";")[0];
+        //console.log(pdata);
 
 
         /*console.log('DATA ' + sock.remoteAddress + ': ' + data);
