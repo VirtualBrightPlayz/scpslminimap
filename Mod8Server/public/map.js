@@ -185,7 +185,7 @@ function draw() {
     ctx.rotate((-player.roty + 180) * Math.PI / 180);
     ctx.beginPath();
     ctx.moveTo(0, 0);
-    ctx.lineTo(0, 10);
+    ctx.lineTo(0, -10);
     ctx.strokeStyle = ctx.fillStyle;
     ctx.stroke();
     ctx.closePath();
