@@ -46,7 +46,7 @@ There are some lines of code in the `Mod8Server/server.js` file at the top that 
 
 Simple, press the `~` key on your keyboard when on the server in-game (not in the server) and you should see something along the lines of `Your SteamID is: <yoursteamidhere>` and `Your new key is: <random 5 character code>`.
 
-Then goto `<yourwebsite.example>:8000` in a modern web browser, and enter your steam64id and the 5 character key. You can save the steam64id into cookies if you wish to.
+Then goto `<yourwebsite.example>:8000` or `yourServerIP:8000` in a modern web browser, and enter your steam64id and the 5 character key. You can save the steam64id into cookies if you wish to.
 
 From here, you should see a map, some navigation buttons, yourself, and maybe other players or a ring of where an SCP might be.
 
