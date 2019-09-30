@@ -5,6 +5,8 @@ Map doesn't load until a full server restart - Fixed
 
 Center is broken
 
+Some rooms might not look right
+
 ## What is it?
 
 Glad you asked, it is a simple, yet configurable in-browser minimap for SCP:SL.
