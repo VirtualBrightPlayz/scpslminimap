@@ -23,6 +23,10 @@ Actually, it isn't that simple as drag-n-drop the .dll into the SMod2 plugins fo
 
 To start, install node.js (google it), and then install the packages in the directory `Mod8Server/` using `npm`.
 
+`npm install --save socket.io`
+
+`npm install --save express`
+
 Then, close your SCP:SL server and put the `Mod8.dll` into the `sm_plugins/` folder in the SCP:SL server files.
 
 If you are playing with friends/want to make it public, make sure to open port `8000`.
